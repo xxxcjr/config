@@ -1,0 +1,84 @@
+"2.3.1 (created: 2010/04/07 18:25:13)
+
+set runtimepath=/home/xxxcjr/.vimperator
+source! /home/xxxcjr/.vimperatorrc.local
+
+" vim: set ft=vimperator:
+let mapleader = ","	"配置<Leader>，默认为\
+
+noremap <C-c> <C-v><C-c>
+cnoremap <C-c> <C-v><C-c>
+inoremap <C-c> <C-v><C-c>
+
+set nextpattern=\s*下一页|下一頁|下一张|下页\s*,\bNext|next\b,^>$,^(>>|»)$,^(>|»),(>|»)$,\bmore\b
+set previouspattern=\s*上一页|上一頁|上一张|上页\s*,\bprev|previous\b,^<$,^(<<|«)$,^(<|«),(<|«)$
+
+"set editor=gvim -f
+" set guioptions+=rn
+
+noremap <C-a> :set go+=mT<cr>
+noremap <C-q> :set go-=mTB<cr>
+" 按Ctrl+数字键切换到相应标签
+noremap <M-1> 1gt
+noremap <M-2> 2gt
+noremap <M-3> 3gt
+noremap <M-4> 4gt
+noremap <M-5> 5gt
+noremap <M-6> 6gt
+noremap <M-7> 7gt
+noremap <M-8> 8gt
+noremap <M-9> 9gt
+"打开在命令行自动补全功能
+"set wop=auto
+
+"更舒服的缩放键，用＝代替+
+noremap = +
+noremap <F7> <C-F>
+noremap ,s :so "~/.vimperatorrc"<cr>
+"noremap <M-Space> <C-B>
+"用q关闭
+noremap Q q
+inoremap Q q
+cnoremap Q q
+map q :qall<CR>
+noremap U :undo<space>
+" 停止加载
+noremap <F2> :stop<cr>
+" 打开zotero便签窗口
+noremap mn :js ZoteroPane.openNoteWindow();<cr>
+" 把选中的内容存为便签
+noremap mm :js ZoteroPane.newNote(false,false,getBrowserSelection(),gLastValidURLStr);<cr>
+" 保存当前页面
+noremap <F3> :dia savepage<cr>
+noremap <S-F1> :emenu 工具.Default User Agent.iPhone 3.0<cr>
+noremap <S-F2> :emenu 工具.iPhone 3.0.Search Robots.Yahoo Slurp<cr>
+noremap <S-F3> :emenu 工具.Default User Agent.Default User Agent<cr>
+" 显示快速标签并等待输入标签名
+noremap <F4> :qmarks<cr>
+" F5、F6上一标签、下一标签
+noremap <F5> <ESC>gT
+noremap <F6> <ESC>gt
+" 打开下载文件列表
+noremap ,cz :downloads<cr>
+" 管理可用的扩展和插件
+noremap ,ad :addons<cr>
+" 一键开启/关闭autoproxy代理
+map ,au :set!extensions.autoproxy.proxyMode=auto:echo’gfwAuto’
+map ,ao :set!extensions.autoproxy.proxyMode=global:echo’gfwGlobal’
+" 如何找到这些Vimpertor可运行的命令？在set! extensions.之后输入关键字按Tab键试试
+
+" 解决vimperator与Google reader跟gmail快捷键冲突，自动PASS THROUGH状态
+autocmd LocationChange .* :js modes.passAllKeys = /mail\.google\.com/.test(buffer.URL) || /google\.com\/reader\//.test(buffer.URL)
+"autocmd LocationChange (www|mail)\.google\.com/(reader|mail) -js modes.set(modes.PASS_THROUGH)
+
+autocmd LocationChange www\.douban\.com :2zi
+autocmd LocationChange www\.* <F11>
+"autocmd LocationChange * <F11>
+"autocmd LocationChange file\:* <F11>
+" vim: set ft=vimperator:
+
+" 禁用CSS 启用set noum
+":set um
+
+" 测试
+"/* vim: set ft=vim: */ ~

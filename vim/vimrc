@@ -1,0 +1,761 @@
+" ~/.vimrc or c:\Program files\vim\_vimrc
+" Last Modified: 2011-11-03 星期四 22:23:07 [Athena]
+" 希锐亚的 vim 配置文件
+
+set nocompatible	" 不兼容vi
+
+"""""""""""""""""""""""""""""""""""""""" 平台依赖 """"""""""""""""
+if has("win32")
+    let $VIMFILES = $VIM.'/vimfiles'
+    let $VIMDATA = $VIMFILES.'/vimdata'
+    let PYTHON_BIN_PATH = 'c:/python25/python.exe' " ensure the path right
+elseif has("unix")
+    let $VIMDATA = $HOME.'/.vim/vimdata'
+    let $VIMFILES = $HOME.'/.vim'
+    let PYTHON_BIN_PATH = '/usr/bin/python'
+    " shell设置
+    " set shell=gnome-terminal
+endif 
+" c:\Program Files\Vim\vimfiles 相当于 ~/.vim
+" $VIMDATA文件是用来保存一些编辑信息的。很多信息文件都根据操作系统的不同分成两文件，因为路径的写法不同。
+
+
+"""""""""""""""""""""""""""""""""""""""" 编码设置 """"""""""""""""
+" 输入法与编码设置的FAQ：http://blah.blogsome.com/2007/08/23/vim_cn_faq/
+if has("gui_running") || has("unix")
+    set encoding=utf-8 " 设置vim内部使用的字符编码
+    lang messages zh_CN.UTF-8 " 解决consle输出乱码
+else
+    set encoding=chinese " 设置命令提示符下vim不乱码
+    "lang messages chinese
+    set termencoding=chinese     "终端下的编码，对gvim来说没有必要设置
+    "set langmenu=zh_CN.GBK
+endif
+
+" fileencodings，打开文件时探测文件编码
+set fileencodings=ucs-bom,utf-8,chinese,cp936,gb18030,big5,euc-jp,euc-kr,latin1
+" fileencoding，保存文件编码为utf-8
+set fileencoding=utf-8       
+
+" 编辑非utf-8文件，保存文件编码为utf-8
+au BufWritePre * if !&bin && &fenc != 'utf-8' | set fenc=utf-8 | endif
+
+" 编辑非unix文件，保存文件unix格式
+au BufWritePre * if !&bin && &ff != 'unix' | set ff=unix | endif
+
+" 设置中文菜单不乱码
+set langmenu=zh_CN.UTF-8
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
+set helplang=cn "设置中文帮助
+
+
+
+"""""""""""""""""""""""""""""""""""""""" 内部设置 """"""""""""""""
+" 不使用响铃不闪屏
+set vb t_vb=  
+set history=1000 " 记录命令历史行数
+let mapleader = ","	"配置<Leader>，默认为\
+"set mouse=a " 打开鼠标支持
+set mouse=  "不过老子买不起这玩意
+set whichwrap+=b,s,<,>,[,] "退格和方向键可以换行
+set backspace=indent,eol,start "不设定的话在插入状态无法用退格键和 Delete
+set showcmd " 在状态栏显示目前所执行的指令
+set hlsearch "高亮搜索
+set ignorecase "搜索时忽略大小写
+set smartcase "但在有一个或以上大写字母时,仍保持对大小写敏感
+set showmatch "显示匹配的括号
+"set wildignore+=*.mp3,*.rmvb,*.exe,*.doc "tab键的自动完成现在会忽略这些,影响代码提示
+set scrolloff=1 "光标上下最少保留屏幕行数
+
+" 有关中英文字符、折行的设定
+"set nowarp    " 不换行
+set ambiwidth=double   "对中文用户这个一定要这样设
+" 带有如下符号的单词不要被换行分割
+set iskeyword+=_,$,@,%,#,-,a-z,A-Z,>
+set breakat+=
+set nolinebreak 
+"set formatoptions+=mM  "正确处理中文字符的折行和拼接
+
+" 备份设置
+set backup "开启备份
+set backupext=.vbak  "指定备份文件辍
+set backupdir=$VIMDATA/backup " 备份目录 
+set directory=$VIMDATA/temp " 临时备份目录
+
+"set runtimepath+=$VIMDATA
+
+" 英文单词在换行时不被截断
+set linebreak 
+"在breakat字符处而不是最后一个字符处断行,似乎去除这个设置更有利于中英文混排文章的正确显示
+
+set ai "自动缩进autoindent
+set si "智能缩进smartindent
+"开启根据编号缩进，选中文字后按“=”
+"来源：http://blah.blogsome.com/2007/09/30/vim_tut_indent/
+func! GetIndent(lnum)
+  let ind=len(split(substitute(
+       \ getline(a:lnum),'^[ \t]*\([0-9.]\+\).*','\1',''),'\.'))
+  return ind
+endfunc
+map ,z :se inde=GetIndent(v:lnum)*&sw<CR>
+
+set autoread "当文件在外部被修改时，自动重新读取
+set bsdir=buffer "设定文件浏览器目录为当前目录
+
+"设置自动折行
+"set wrap
+"78字符自动断行
+"set tw=78 fo+=Mm 
+
+" 自动将Vim工作目录迁移到所打开文本文件的目录下
+autocmd BufEnter * cd %:p:h
+
+" tab转化为４个字符
+set expandtab
+set smarttab
+set shiftwidth=4
+set tabstop=4
+
+" 自动设置文件类型
+au BufNewFile,BufRead *.asp :set ft=jscript " all my .asp files ARE jscript
+au BufNewFile,BufRead *.tpl :set ft=html " all my .tpl files ARE html 
+au BufNewFile,BufRead *.c :set ft=c
+"au BufNewFile,BufRead *.py :set ft=python " all my .py files ARE cpy 
+
+" 进行文件类型检测并加载对应的字典文件
+autocmd filetype javascript set dictionary+=$VIMFILES/dict/javascript.dict
+autocmd filetype css,html set dictionary+=$VIMFILES/dict/css.dict
+autocmd filetype php set dictionary+=$VIMFILES/dict/php.dict
+"autocmd filetype py,python set dictionary+=$VIMFILES/dict/pydiction.dict 这字典用得影响效率
+
+"去掉预览窗口显示器
+set completeopt=longest,menu
+
+"自动补全命令时候使用菜单式匹配列表  
+set wildmenu
+autocmd FileType ruby,eruby set omnifunc=rubycomplete#Complete
+autocmd FileType python set omnifunc=pythoncomplete#Complete
+autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType html set omnifunc=htmlcomplete#CompleteTags
+autocmd FileType css set omnifunc=csscomplete#CompleteCSS
+autocmd FileType xml set omnifunc=xmlcomplete#CompleteTags
+autocmd FileType java set omnifunc=javacomplete#Complet
+
+"""""""""""""""""""""""""""""""""""""""" 界面设置 """"""""""""""""
+"设置标题栏  %{GitBranch()}要git-vim插件的支持
+"set title titlestring=%<%F%=%l/%L-%P-记事本 titlelen=70
+"set title titlestring=%<%F\ -\ EmEditor\ \ \ {info:\ %w%h%m%r%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-8.(%l,%c%V%)\ %P\ %{GitBranch()}}
+set title titlestring=%F\ -\ EmEditor\ \ \ {info:\ %w%h%m%r%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-8.(%l,%c%V%)\ %P\ %{GitBranch()}}\ [PWD:%{GetPWD()}]
+" 获取当前目录
+func! GetPWD()
+    return substitute(getcwd(), "", "", "g")
+endf
+
+" 在图形界面和终端的配色方案，若洪洪知道我又写出if if的句子又要笑我了
+if has("gui_running")
+    set columns=80 lines=18	"设置gui默认界面大小
+    winpos 0 200    "设置窗口位置
+    if has("unix")
+        colorscheme grey2
+        set guifont=Monospace\ 12
+        set guifontwide=KaiTi\ 12
+    elseif has("win32")
+        colorscheme asu1dark
+        set encoding=utf-8
+        set guifont=Courier:h12:cANSI
+        set guifontwide=NSimSun:h12 " guifontwide只有在encoding=utf-8时才生效
+    "colorscheme freya
+    endif
+else
+    if has("unix")
+        colorscheme default
+    elseif has("win32")
+        "set tenc=chinese
+        colorscheme ir_black
+    endif
+endif
+
+" 设置语法高亮
+syntax enable
+syntax on
+
+set go=i		"不显示工具栏
+set number	" 显示行号
+set linespace=2		"设置行距
+"set cursorline  "高亮光标所在行,开启行高亮对性能影响很大很大
+hi cursorline guibg=#393939   "设置高亮行色彩
+hi cursorcolumn guibg=#393939  "设置高亮行色彩
+
+set display=lastline " 长行不显示@
+
+"在标签页栏中去除当前所编辑文件的路径信息，只保留文件名。ShortTabLabel是已有函数，所以要加上“!”
+function! ShortTabLabel ()
+    let bufnrlist = tabpagebuflist (v:lnum)
+    let label = bufname (bufnrlist[tabpagewinnr (v:lnum) -1])
+    let filename = fnamemodify (label, ':t')
+    return filename
+endfunction
+set guitablabel=.%{ShortTabLabel()}
+
+"set shortmess=atI    " 启动的时候不显示那个援助索马里儿童的提示
+
+filetype on "打开文件类型检测功能
+filetype plugin on "开启支持文件类型的插件
+filetype indent on "开启支持文件类型的缩进
+
+
+"""""""""""""""""""""""""""""""""""""""" 扩展功能 """"""""""""""""
+
+" 实现括号自动补全
+:inoremap ( ()<ESC>i
+:inoremap ) <c-r>=ClosePair(')')<CR>
+:inoremap { {}<ESC>i
+:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap [ []<ESC>i
+:inoremap ] <c-r>=ClosePair(']')<CR>
+":inoremap < <><ESC>i
+":inoremap > <c-r>=ClosePair('>')<CR>
+
+function! ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+       return "\<Right>"
+    else
+       return a:char
+    endif
+endf
+
+"匹配括号的规则，增加针对html的<>的显示
+set matchpairs=(:),{:},[:],<:> 
+
+" 恢复上次文件打开位置,指定viminfo的位置
+if has("win32")
+    set viminfo='10,\"100,:20,%,n$VIMDATA/_viminfo_windows
+elseif has("unix")
+    set viminfo='10,\"100,:20,%,n$VIMDATA/.viminfo_linux
+endif
+
+au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
+
+" 自动保存和加载会话状态 {
+" 来源《跟我一起定制VIM系列之三、更高效的产品开发》：http://jacob-knows.com/2010-07-25-vim-diy-series-effective-product-dev-env.html
+" 自动保存和加载视图状态 {
+"set viewdir=$VIMDATA/views/
+"autocmd BufWinLeave * mkview
+"autocmd BufWinEnter * "silent loadview"
+"function! SaveSession()
+"    execute 'mksession! $VIMDATA/session'
+"endfunction
+" 
+"function! LoadSession()
+"    if argc() == 0
+"        execute 'source $VIMDATA/session'
+"    endif
+"endfunction
+" 
+"autocmd VimEnter * call LoadSession()
+"autocmd VimLeave * call SaveSession()
+"}
+
+"定义函数SetTitle，自动插入文件头 {
+" 定义好一些后缀为文本
+autocmd BufNewFile *.vtx,*.blog,*.cjr setlocal ft=txt
+
+func! SetTitle()
+if &filetype == 'java'
+    call setline(1, "\# java文件 ")
+elseif &filetype == 'sh'
+    call setline(1, "\#########################################################################")
+    call setline(2, "\# Author: 希锐亚")
+    call setline(3, "\# Created Time: ".strftime("%Y-%m-%d %A %H:%M:%S"))
+    call setline(4, "\# Last Modified: ".strftime("%Y-%m-%d %A %H:%M:%S"))
+    call setline(5, "\# File Name: ".expand("%"))
+    call setline(6, "\# Description: ")
+    call setline(7, "\#########################################################################")
+    call setline(8, "\#!/bin/bash")
+    call setline(9, "")
+elseif &filetype == 'c'
+    call setline(1, "it's c")
+elseif &filetype == 'python'
+    call setline(1, "\#!/usr/bin/env python")
+    call setline(2, '# -*- coding:utf-8 -*-')
+    call setline(3, '# vim:set shiftwidth=4 tabstop=4 expandtab:')
+    call setline(4, '"""')
+    call setline(5, "\   Author: 希锐亚")
+    call setline(6, "\   Created Time: ".strftime("%Y-%m-%d %A %H:%M:%S"))
+    call setline(7, "\   Last Modified: ".strftime("%Y-%m-%d %A %H:%M:%S"))
+    call setline(8, "\   File Name: ".expand("%"))
+    call setline(9, "\   Description: ")
+    call setline(10, '"""')
+    call setline(11, "")
+    call setline(12, "")
+    exe 'normal G'
+elseif &filetype == 'html'
+    call setline(1, '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
+    call setline(2, '<html xmlns="html://www.w3.org/1999/xhtml">')
+    call setline(3, '    <head>')
+    call setline(4, '        <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />')
+    call setline(5, '        <title></title>')
+    call setline(6, '        <styple type="text/css"></styple>')
+    call setline(7, '    </head>')
+    call setline(8, '    <body>')
+    call setline(9, '    </body>')
+    call setline(10, '</html>')
+    exe 'normal 12j'
+elseif &filetype == 'txt'
+    call setline(1, "\# File Name: ".expand("%"))
+    call setline(2, "\# Created Time: ".strftime("%Y-%m-%d %A %H:%M:%S"))
+    call setline(3, "\# Last Modified: ".strftime("%Y-%m-%d %A %H:%M:%S"))
+    call setline(4, "\-------------------------------------------------------")
+    call setline(5, "")
+    exe 'normal G'
+else
+    call setline(1, "\* 其他文件 ")
+endif
+endfunc
+
+"新建.c,.h,.sh,.java文件，自动插入文件头
+autocmd BufNewFile *.vtx,*.blog,*.txt,*.cjr,*.[ch],*.py,*.sh,*.java,*.html,*htm exec ":call SetTitle()"
+"}
+
+" 函数，修改文件头部的最后修改时间，就象这个文件的头部一样
+function! LastMod()
+  if line("$") > 5
+    let l = 5
+  else
+    let l = line("$")
+  endif
+"  exe "1," . l . "s/[Ll]ast [Mm]odified: .*/Last Modified: " . strftime("%c") . " [" . hostname() . "]/e"
+  exe "1," . l . "s/[Ll]ast [Mm]odified: .*/Last Modified: " . strftime("%Y-%m-%d %A %H:%M:%S") . " [" . hostname() . "]/e"
+endfunction
+
+" 手工更新文件最后修改时间
+map ,L :call LastMod()<CR>
+
+" Edit "Last modified"-comment in the top 5 lines of config files
+" 自动更新文件修改时间
+if has("autocmd")
+  augroup lastmod
+    autocmd!
+    autocmd BufWritePre,FileWritePre * exec("normal ms")|call LastMod()|exec("normal `s")
+  augroup END
+endif
+
+" 自动使用文本文件
+"autocmd BufNewFile *.vtx 0r $VIMFILES/template/text.tpl
+"autocmd BufNewFile *.py 0r /home/xxxcjr/.vim/template/python.tpl
+
+
+" 一键编译python代码
+" 来源：http://www.vimer.cn/2010/07/vimgvim%e4%b8%80%e9%94%ae%e6%89%a7%e8%a1%8cpython%e8%84%9a%e6%9c%ac%e7%9a%84bug.html
+map <f8> <esc>:call CheckPythonSyntax()<cr>
+function! CheckPythonSyntax()
+    let mp = &makeprg
+    let ef = &errorformat
+    let exeFile = expand("%:t")
+    setlocal makeprg=python\ -u
+    set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+    silent make %
+    copen
+    let &makeprg = mp
+    let &errorformat = ef
+endfunction
+
+
+" html自动补全, 这个代码存在问题，需要修改
+" 代码改自http://daogangtang.blog.163.com/blog/static/136399439201041234255293/
+autocmd BufNewFile,BufRead *.html,*.htm,*.asp,*.php,*.jsp,*.xml exec ":call InsertHtmlTag2()"
+function! InsertHtmlTag()
+    let pat = '\c<\w\+\s*\(\s\+\w\+\s*=\s*[''#$;,()."a-z0-9]\+\)*\s*>'
+    normal! a>
+    let save_cursor = getpos('.')
+    let result = matchstr(getline(save_cursor[1]), pat)
+    "if (search(pat, 'b', save_cursor[1]) && searchpair('<','','>','bn',0,  getline('.')) > 0)
+    if (search(pat, 'b', save_cursor[1]))
+       normal! lyiwf>
+       normal! a</
+       normal! p
+       normal! a>
+    endif
+    :call cursor(save_cursor[1], save_cursor[2], save_cursor[3])
+endfunction
+function! InsertHtmlTag2()
+inoremap > <ESC>:call InsertHtmlTag()<CR>a
+endfunction
+
+" 自动折叠函数
+" 要自动折叠的文本要在文本最后加上“ vim: foldmethod=expr: foldexpr=Fold(v\:lnum)”
+function! Fold(n)
+  let l = len(split(matchstr(getline(a:n), '^[[:digit:].]\+'), '\.'))
+  if l == 0
+    return '='
+  else
+    return '>' . l
+  endif
+endfunction
+
+" 终端下防止Tlist使用窗口发生变化
+if has('eval')
+    let Tlist_Inc_Winwidth=0
+endif
+
+ 
+
+"""""""""""""""""""""""""""""""""""""""" 快捷键 """"""""""""""""
+"按j移动一行
+nmap j gj
+nmap k gk
+" 插件模式下按上下箭头可以移动光标
+inoremap <Down> <C-O>gj
+inoremap <Up>   <C-O>gk
+" 用c-j,k在buffer之间切换--觉得没什么用
+"nn <C-J> :bn<cr>
+"nn <C-K> :bp<cr>
+
+" 按ctrl+s 打开另存为窗口，并以第一行为默认文件名
+function! Lilydjwg_TSave()
+  let line = getline(1)
+  if line =~ '^\s*$'
+    let line = getline(2)
+  endif
+  let line = substitute(line, '[:/\\]', '-', 'g')
+  let line = substitute(line, '^\s\+', '', 'g')
+  let line = substitute(line, '\s\+$', '', 'g')
+  let line = substitute(line, ' ', '\\ ', 'g')
+  let line = substitute(line, '\r', '', 'g')
+  exe 'bro sav ' . line . '.txt'
+endfunction
+
+map <c-s> :call Lilydjwg_TSave()<cr>
+inoremap <c-s> <esc>:call Lilydjwg_TSave()<cr>
+vmap <c-s> <esc>:call Lilydjwg_TSave()<cr>
+
+" 插入模式下，模防bash的快捷键
+" ctrl-a，移动到行首
+inoremap <c-a> <c-o>0
+" ctrl-e，移动到行尾
+inoremap <c-e> <c-o>$
+"左移一个字符
+inoremap <c-b> <c-o>h
+" 右移一个字符
+inoremap <c-f> <c-o>l
+" ctrl-d，删除当前字符 
+inoremap <c-d> <c-o>x
+
+map ,1 :e ~/.vimperatorrc<cr>
+
+" 按空格向下翻一屏
+nmap <Space> <C-f>
+" 按“yy”把所选内容复制到系统粘贴板
+"vmap yy "+ygv
+vmap yy "+y
+" vmap <c-y> "+y 与插件zencoding的快捷键有冲突
+" 把系统粘贴板的内容粘贴到下一行，也可按Shilt+Insert 
+nmap ,p "+p
+nmap <c-p> "+p
+"按``新建标签页
+map `` <Esc>:tabnew<cr>
+"按`1全选并提制
+map `1 <Esc>ggVG"+y<cr>
+" 按F2取消搜索加亮
+nmap <F2> :nohlsearch<CR>
+" 按<F3>可以第一行生成一行文件信息，记录文件最后更新日期，作者
+"nmap <F3> mzgg2O<esc>:call setline(1, "\" Last Modified: ".strftime("%c") . " [" . hostname() . "]")<cr>`z
+nmap <F3> mzgg2O<esc>:call setline(1, "\" Last Modified: ".strftime("%Y年%m月%d日 %A %H时%M分%S秒") . " [" . hostname() . "]")<cr>`z
+
+" 我喜欢用F4键打开一个文件浏览窗口
+if has("vertsplit")
+  nnoremap <silent> <F4> :call FileExplOpen()<CR>:let &columns= &columns + 21<cr>
+  if !exists("*FileExplOpen")
+    fun FileExplOpen()
+      if @% == ""
+        20vsp .
+      else
+        exe "20vsp " . expand("%:p:h")
+      endif
+    endfun
+  endif
+endif
+
+" 按F5显示buffer中的文件，并提示输入相关编号编辑该文件
+map <F5> :ls<cr>:e #
+if has('gui_running')
+    " F9去除、显示工具、菜单栏
+    map <silent> <F9> :if &guioptions =~# 'T' <Bar>
+            \set guioptions-=T <Bar>
+            \set guioptions-=m <bar>
+    \else <Bar>
+            \set guioptions+=T <Bar>
+            \set guioptions+=m <Bar>
+    \endif<CR>
+endif
+
+" f6在当前行的下一行插入当前时间
+"map <F6> :r! date \+\%F\ \%T<cr>o
+map <F6> <Esc>O<c-r>=strftime("▇┫ %Y年%m月%d日 %A %H时%M分%S秒 ┫▇\n")<cr>
+
+" html编辑的快捷键
+" ,d
+map ,d <esc>O<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><esc>
+" ,h
+map ,h <esc>o<html xmlns="http://www.w3.org/1999/xhtml" lang="zh_CN" xml:lang="zh_CN"><esc>
+" ,e
+map ,e <esc>o<meta content="text/html; charset=UTF-8" http-equiv="content-type"><esc>
+
+" F11全屏,F12还原窗口
+if has("win32")
+    map <F11> <Esc>:simalt ~x<CR> 
+endif
+    map <F12> <Esc>:set columns=78 lines=18<cr>
+
+" 这部分快捷键对linux终端无效
+noremap <M-1> 1gt
+noremap <M-2> 2gt
+noremap <M-3> 3gt
+noremap <M-4> 4gt
+noremap <M-5> 5gt
+noremap <M-6> 6gt
+noremap <M-7> 7gt
+noremap <M-8> 8gt
+noremap <M-9> 9gt
+noremap <M-0> 10gt
+
+"按mm去除多余的换行符CR
+nmap mm :%s/\r//g<cr>
+
+"按ctrl+h在左右窗口切换
+map <c-h> <ESC><c-w>h
+
+if has("win32")
+    "map ,v <Esc>:e $Vim\_vimrc<cr>
+    map ,v <Esc>:e d:\library\important_files\vim\vimrc<cr>
+    autocmd! bufwritepost *vimrc source $VIM\_vimrc
+    map ,r <Esc>:e d:\library\important_files\vimperator\_vimperatorrc<cr>
+else
+    map ,v <Esc>:e ~/.vimrc<cr>
+    autocmd! bufwritepost *.vimrc source ~/.vimrc
+    map ,r <Esc>:e ~/.vimperatorrc<cr>
+endif
+
+
+"""""""""""""""""""""""""""""""""""""""" 插件设置 """"""""""""""
+" ----------------- mru.vim
+"  http://www.gracecode.com/archives/2989/
+if has("win32")
+    let MRU_File=$VIMDATA.'/mru_files_windows'
+else
+    let MRU_File=$VIMDATA.'/mru_files_linux'
+endif
+let MRU_Max_Entries = 400 " 最大记录数
+map <leader>m :MRU<cr>
+
+" ----------------- vim-autocomplpop.zip
+" http://www.vim.org/scripts/script.php?script_id=1879
+" 与VimIM存在冲突、与snipMate存在冲突
+
+" ----------------- snipMate.zip tab键代码段补全 
+" http://www.vim.org/scripts/script.php?script_id=2540
+" get week day string in chinese.
+" windows 7的Gvim不带这个函数，但ubuntu带了。怪哉
+" 修改$VIMFILES/after/snipMate.vim使唤起键为<c-o>
+function! Week_cn()
+    return "星期".strpart("日一二三四五六", strftime("%w")*3, 3)
+endfunction
+
+" ----------------- CSS.vim CSS颜色预览插件,文件后辍名要为.css
+" http://www.vim.org/scripts/script.php?script_id=2150
+" C:\Program Files\Vim\vimfiles\after\syntax\       #Windows 用户
+" $HOME/.vim/after/syntax/                          #Linux 用户
+
+" -----------------cs Explorer 快速切换配色方案
+"  http://www.vim.org/scripts/script.php?script_id=1298
+" 使用命令':colorschemeexplorer',ColorSchemeExplorer
+
+" ----------------- NERD tree
+" http://www.vim.org/scripts/script.php?script_id=1658
+let NERDTreeShowHidden = 1
+"let NERDTreeWinPos = "right"
+let NERDTreeWinPos = "left"
+let NERDTreeWinSize = 20 
+if has("win32")
+    let NERDTreeBookmarksFile=$VIMDATA.'/NerdBookmarks_windows'
+else
+    let NERDTreeBookmarksFile=$VIMDATA.'/NerdBookmarks_linux'
+endif
+let NERDTreeShowHidden = 0                   "不显示隐藏文件夹，只有开启时下一项才有效
+let NERDTreeIgnore = ['\.\/$', '\.\.\/$']    "不显示当前文件夹和上一级文件夹 
+nmap <leader>n :NERDTreeToggle v<cr>
+
+
+" ----------------- calendar.vim
+" 设置diary目录
+let g:calendar_diary=$VIMDATA.'/diary'
+" 一条有点长而无趣的命令，不过终于把日记窗口调到合乎我的要求
+map <Leader>c <Esc>,cal<cr><C-W><S-L><C-W>h<C-W><S-J><C-W>k<C-W>l
+
+" ----------------- ctags5.8 
+" http://ctags.sourceforge.net/
+"let Tlist_Ctags_Cmd=$VIM\vimfiles\ctags58\ctags.exe
+"在前面已经指定路径了
+"不指定路径也可以，把ctags.exe复制到vim72目录下就行
+if has("win32")
+    let Tlist_Ctags_Cmd=$VIM.'/vimfiles/ctags58/ctags.exe' 
+    " 等号两边不能不空格，要不会出错
+elseif has("win32")
+    let Tlist_Ctags_Cmd = '/usr/local/bin/ctags'
+endif
+"保存代码时自动生成ctags
+"au BufReadPost .c,.cpp,*.h silent! !ctags -R &
+
+" ----------------- taglist.vim 提供单个源代码文件的函数列表
+" 经过自己修改
+" http://www.vim.org/scripts/script.php?script_id=273
+" 为使用txtbrowser，故使用这个  http://att.newsmth.net/att.php?p.731.55149.1226.vim 修改版
+" <F10> 打开关闭TagList窗口，窗口在右边
+map <silent> <F10> :TlistToggle<cr>
+let Tlist_Show_One_File = 1  "同时显示多个文件和tag，1为只显示当前文件的
+let Tlist_Exit_OnlyWindow = 1  " 如果taglist窗口是最后一个窗口，则退出vim
+ let Tlist_Use_Right_Window = 1  " 在右侧窗口中显示taglist窗口
+"let Tlist_File_Fold_Auto_Close = 1 "非当前文件函数列表折叠隐藏
+let Tlist_GainFocus_On_ToggleOpen = 0
+let Tlist_WinWidth = 20
+let Tlist_Auto_Open = 0
+let Tlist_Display_Prototype = 0
+let Tlist_actionscript_settings = 'actionscript;c:class;f:method;p:property;v:variable'
+let Tlist_Inc_Winwidth = 1   "显示标签列表窗口时允许/禁止扩展Vim窗口宽度
+set tags+=$VIMDATA/tags
+set tags+=./tags,./../tags,./**/tags
+"let Tlist_Close_On_Select = 1
+"let Tlist_Process_File_Always=0 "不一直更新tags
+
+" ----------------- python_pydiction.vim  版本1.2
+"python自动补全 按Tab实现代码补全
+"将文件 python_pydiction.vim 放到 ~/.vim/after/ftplugin/ 路径下，如果这个路径不存在，你可以自己创建这个文件夹结构。
+"complete-dict被改名成pydiction.dict，放在dict目录下
+"配置完了之后，会发现snipMate与pydiction都是使用Tab键补全，会存在冲突。通过修改其中一个
+"的快捷键可以解决这个冲突。我选择修改pydiction的快捷键，修改方法如下：
+"打开python_pydiction.vim文件，找到这行
+"inoremap <silent> <buffer> <TAB>
+"修改为下面这样，就可以通过Ctrl+n来进行补全了。
+"inoremap <silent> <buffer> <C-n>
+let g:pydiction_location = $VIMFILES.'/dict/pydiction.dict'
+"let g:pydiction_location = '/home/xxxcjr/.vim/dict/pydiction.dict'
+"defalut g:pydiction_menu_height == 15
+let g:pydiction_menu_height = 20 " 设置补全菜单高度 
+
+" ----------------- tetrls.vim 俄罗斯方块
+" http://www.vim.org/scripts/script.php?script_id=172游戏插件
+" <Leader>te启动游戏
+
+" ----------------- nibble 贪吃蛇 游戏插件
+" http://www.vim.org/scripts/script.php?script_id=916
+" :Nibble启动游戏
+
+" ----------------- genutils 解决一些函数支持
+" http://www.vim.org/scripts/script.php?script_id=197
+
+" ----------------- html.vim、 htmlcomplete.vim和html5.vim html5自动补全
+" http://hotoo.github.com/blog/vim-html5.html
+
+" ----------------- css.vim、csscomplete.vim css自动补全
+" http://hotoo.github.com/blog/vim-html5.html
+
+" ----------------- asx.snippets asx的smipMate的模板语法文件 
+"  http://hotoo.github.com/blog/asx-snippets-for-vim.html
+
+" ----------------- txtbrowser-1.3.4 txt浏览
+" http://www.vim.org/scripts/script.php?script_id=2899
+" http://guoyoooping.blog.163.com/blog/static/1357051832009112910162389/
+autocmd BufRead,BufNewFile *.txt,*.log,*.ran,*.vtx setlocal ft=txt
+
+" ----------------- zencoding.vim
+" http://www.vim.org/scripts/script.php?script_id=2981 
+" 安装在$vim\vimfiles\plugin目录，教程http://www.javaeye.com/news/13149
+" ZenCoding
+"let g:user_zen_expandabbr_key = '<c-e>'
+"let g:use_zen_complete_tag = 1
+
+" ----------------- syntax/2html.vim 把当前文档转化成html文档 Vim自带
+"设为零则强制关闭行号: 
+:let html_number_lines = 0
+"使用层叠样式表 (CSS1) 来设
+:let html_use_css = 1
+"不要使用pre标签
+:let html_no_pre = 1
+"使用该脚本产生 XHTML
+:let use_xhtml = 1
+
+" ----------------- winManager 文件浏览器和窗口管理器 
+" let g:winManagerWindowLayout='FileExplorer|TagsExplorer'
+let g:winManagerWindowLayout='FileExplorer|TagList'
+" 解决Vim编码设置与系统不一致所引起的乱码问题
+"let g:VEConf_systemEncoding='cp936'
+nmap wm :WMToggle<cr>
+
+" ----------------- statusline.vim
+" 作用：美化状态栏
+
+" ----------------- vimim.vim,vimim.pin_huge.txt,vimim.wubijd.txt
+" 中文输入法
+
+" ----------------- Template.vim
+" 来源及教程：http://www.gracecode.com/archives/2414/
+"let g:TemplatePath=$VIM.'/vimfiles/template/'
+let g:TemplatePath=$VIMFILES.'/template/'
+let g:TemplateCursorFlag='#cursor#'
+" 新建 XHTML 的快捷键，不知为什么模版的设置不太灵光，所以把它也加到快捷键中
+map tx :let g:TemplatePath=$VIMFILES.'/template/'<cr>:NewTemplateTab xhtml<cr>
+map tt :let g:TemplatePath=$VIMFILES.'/template/'<cr>:NewTemplateTab text<cr>
+map tb :let g:TemplatePath=$VIMFILES.'/template/'<cr>:NewTemplateTab cjr_blog<cr>
+
+" ----------------- fcitx.vim
+"  来源：http://lilydjwg.is-programmer.com/pages/19540
+"  作用：这个是与小企鹅输入法fcitx配合使用的，使得在离开插入模式时自动切换为英文输入，在同一缓冲区再次进入插入模式时恢复离开时的输入法状态。放到Vim的plugin目录下即可。注意需要使用4.0或以上版本的fcitx，更早的版本要么有 bug 要么不支持。
+
+" ----------------- vimwiki {
+"  http://www.vim.org/scripts/script.php?script_id=2226
+"  <Leader>vim打开wiki首页
+let g:vimwiki_camel_case = 0 "少不了用中文，内部链接还是用[[链接]]吧 
+"let g:vimwiki_use_mouse = 1 
+let g:vimwiki_CJK_length = 1 
+let g:vimwiki_w32_dir_enc = 'utf-8' 
+let g:vimwiki_menu = 'Plugin.Vimwiki' 
+"let g:vimwiki_browsers=['C:\Program Files\Mozilla Firefox\firefox.exe'] 
+let g:vimwiki_list = [{ 
+\ 'auto_export': 1, 
+\ 'path': '$VIMDATA/vimwiki/', 
+\ 'path_html': '$VIMDATA/vimwiki/', 
+\ 'html_header': '$VIMDATA/template/header.tpl', 
+\ 'html_footer': '$VIMDATA:/vimwiki/template/footer.tpl', 
+\ 'nested_syntaxes': {'python': 'python', 'perl': 'perl', 'sql': 'sql', 'cmd': 'dosbatch'}}] 
+au BufNewFile */diary/????-??-??.wiki read $VIMDATA/vimwiki/template/vimwiki_diary.tpl | normal ggdd " 日记的模板 
+"}
+
+" ----------------- quickfix {
+" 错误列表窗口，使命令:cw 打开
+" }
+
+" ----------------- git-vim {
+" 在vim中使用git
+" 项目地址为: http://github.com/motemen/git-vim
+" 快捷键设置
+map <leader>gs :GitStatus<cr>
+map <leader>gc :GitCommit<cr>
+map <leader>ga :GitAdd<cr>
+map <leader>go :GitLog<cr>
+map <leader>gp :GitPush<cr>
+map <leader>gl :GitPull<cr>
+" }
+
+
+" ----------------- pyflakes-vim {
+"  提供python错误的下划线提示
+
+"  }
+
+" ----------------- auto_mkdir
+" http://www.vim.org/scripts/script.php?script_id=3352
+" 自动创建保存路径中的目录
+"""""""""""""""""""""""""""""""""""""""" 存在问题 """"""""""""""""
+

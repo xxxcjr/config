@@ -1,0 +1,20 @@
+/*
+ *  about:support
+ * Do not remove the @namespace line -- it's required for correct functioning
+ */
+@namespace url("http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"); /* set default namespace to XUL */
+
+#status-bar{visibility: visible;} /*全屏显示状态栏*/
+
+#context-sendlink, /*郵寄此鏈結*/
+#context-sendpage, /*郵寄網址*/
+#context-sendimage /*郵寄此圖片*/ 
+{ display: none !important; }
+
+#context-back, /*上一頁*/
+#context-forward, /*下一頁*/
+#context-reload, /*重新載入*/
+#context-stop, /*停止*/ 
+#context-openlink /*新窗口打开链接*/
+{ display: none !important; }
+
