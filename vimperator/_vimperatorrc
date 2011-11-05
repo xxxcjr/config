@@ -100,24 +100,6 @@ autocmd LocationChange www\.* <F11>
 " ubuntu论坛我的帖子
 :qmark h http://forum.ubuntu.org.cn/search.php?search_id=egosearch&sf=firstpost
 
-" n-z:那种网站
-" 武当社区
-:qmark x http://www.jvcxp.com/thread-htm-fid-123.html
-" sis
-:qmark n http://64.120.179.165/bbs/index.php
-" 草榴社区
-:qmark b http://1024.liandal.com/index.php?u=84764&vcencode=3765129151
-" touch99
-:qmark v http://118.142.2.174/ 
-"玛雅论坛
-:qmark c http://b.maya101.info/index.php
-"亚洲有码原创 | Original Asian mosaic BT 
-"http://75.126.148.18/simple/?f134.html
-"真.AV分享集中营
-"http://www.fevernet.com/forum-112-3.html
-" 记MeeGo多系统引导
-:qmark 5 http://www.houqp.com/multi-boot-with-meego
-"提问了，待回答
-:qmark 6 http://zhiwei.li/text/2011/07/git的撤销操作/
+
 " 测试
 "/* vim: set ft=vim: */ ~
