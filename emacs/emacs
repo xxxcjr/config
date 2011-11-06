@@ -1,0 +1,258 @@
+(setq load-path (cons (expand-file-name "~/.emacs.d")
+ load-path))
+;配色方案
+(add-to-list 'load-path "~/.emacs.d/color-theme-6.6.0")
+(require 'color-theme)
+(color-theme-initialize)
+(color-theme-dark-blue2)
+;charcoal Black、Midnight、subtle Hacker
+;; 背景和字体颜色
+(set-foreground-color "gainsboro")
+(set-background-color "grey30")
+(set-border-color "black")
+;; 语法高亮显示，区域选择，二次选择 ;;前景和背景色
+(set-face-foreground 'highlight "white")
+(set-face-background 'highlight "blue")
+(set-face-foreground 'region "cyan")
+(set-face-background 'region "blue")
+(set-face-foreground 'secondary-selection "skyblue")
+(set-face-background 'secondary-selection "darkblue")
+;不要那个如此大的工具条
+(tool-bar-mode -1)
+;;禁用滚动栏，用鼠标滚轮代替
+(scroll-bar-mode nil)
+;设置字体
+(set-default-font "Monospace-11")
+;显示时间
+(display-time)
+;时间使用24小时制
+(setq display-time-24hr-format t)
+;时间显示包括日期和具体时间
+(setq display-time-day-and-date t)
+;光标移动到鼠标下时，鼠标自动弹开
+(mouse-avoidance-mode 'animate) 
+;显示行号
+(global-linum-mode t)
+;默认目录
+(setq default-directory "~/")
+;高亮当前行
+;(require 'hl-line)
+;(global-hl-line-mode t)
+;开启语法高亮。
+(global-font-lock-mode 1)
+;;只渲染当前屏幕语法高亮，加快显示速度
+(setq font-lock-maximum-decoration t)
+;显示匹配的括号
+(show-paren-mode t)
+;匹配括号的时候, 不要跳到另一个括号那里
+(setq show-paren-style 'parentheses)
+;高亮显示要拷贝的区域
+(transient-mark-mode t)
+;允许emacs和外部其他程式的粘贴
+(setq x-select-enable-clipboard t)
+;支持中键粘贴
+(setq mouse-yank-at-point t)
+;当光标在行尾上下移动的时候，始终保持在行尾。
+(setq track-eol t)
+(setq default-fill-column 78);默认显示 80列就换行
+;;使用 y or n 提问
+(fset 'yes-or-no-p 'y-or-n-p)
+;;;;备份策略
+;配置备份文档的路径
+(setq backup-directory-alist '(("" . "~/.emacs.d/auto-save-list/")))
+;不要生成临时文件
+(setq-default make-backup-files nil)
+;生成临时文件
+;(setq-default make-backup-file t)
+;(setq make-backup-file t)
+;(setq make-backup-files t)
+;启用版本控制，即能够备份多次
+(setq version-control t)
+;备份最原始的版本两次,即第一次编辑前的文档，和第二次编辑前的文档
+(setq kept-old-versions 2)
+;备份最新的版本10次，理解同上
+(setq kept-new-versions 3)
+;删掉不属于以上版本的版本
+(setq delete-old-versions t)
+;自动存盘
+(setq auto-save-mode t)
+;击键100次自动保存
+(setq auto-save-interval 100)
+;改变emacs标题栏的标题
+(setq frame-title-format "%f@Athena")
+
+;===== 设置Emacs启动时窗口大小及位置 开始 =====
+(setq default-frame-alist
+'((top . 42)
+(left . 42)
+(height . 35)
+(width . 100)
+(menu-bar-lines . 20)
+(tool-bar-lines . 20)
+;(background-color . "rgb:00/00/00")
+;(foreground-color . "rgb:ff/ff/ff")
+;(font . "Monospace-11")
+;(cursor-type . bar)
+))
+;===== 设置Emacs启动时窗口大小及位置 结束 =====
+
+;===== 代码补全 auto-complete 开始 =====
+(add-to-list 'load-path "/home/xxxcjr/.emacs.d/auto-complete-1.3.1")
+(require 'auto-complete-config)
+(add-to-list 'ac-dictionary-directories "/home/xxxcjr/.emacs.d/auto-complete-1.3.1/ac-dict")
+(ac-config-default)
+;===== 代码补全 auto-complete 结束 =====
+
+;===== emms设置 开始 =====
+;来源：http://waterlin.blog.35.cn/articles/用emacs的emms-mode来播放多媒体文件.html
+(add-to-list 'load-path "~/.emacs.d/emms-3.0")
+(require 'emms-setup)
+(emms-standard)
+(emms-default-players)
+;; global key-map
+(global-set-key (kbd "H-x") 'emms-playlist-mode-go)
+
+(global-set-key (kbd "C-c e t") 'emms-play-directory-tree)
+(global-set-key (kbd "C-c e x") 'emms-start)
+(global-set-key (kbd "C-c e v") 'emms-stop)
+(global-set-key (kbd "C-c e n") 'emms-next)
+(global-set-key (kbd "C-c e p") 'emms-previous)
+(global-set-key (kbd "C-c e o") 'emms-show)
+(global-set-key (kbd "C-c e h") 'emms-shuffle)
+(global-set-key (kbd "C-c e e") 'emms-play-file)
+(global-set-key (kbd "C-c e f") 'emms-play-playlist)
+(global-set-key (kbd "C-c e SPC") 'emms-pause)
+(global-set-key (kbd "C-c e a") 'emms-add-directory-tree)
+
+(global-set-key (kbd "C-c e r")   'emms-toggle-repeat-track)
+(global-set-key (kbd "C-c e R")   'emms-toggle-repeat-playlist)
+
+(global-set-key (kbd "C-c e s u") 'emms-score-up-playing)
+(global-set-key (kbd "C-c e s d") 'emms-score-down-playing)
+(global-set-key (kbd "C-c e s o") 'emms-score-show-playing)
+
+;; playlist-mode-map
+(define-key emms-playlist-mode-map (kbd "SPC") 'emms-pause)
+(define-key emms-playlist-mode-map (kbd "+") 'emms-volume-raise)
+(define-key emms-playlist-mode-map (kbd "-") 'emms-volume-lower)
+(define-key emms-playlist-mode-map (kbd "<right>")
+  (lambda () (interactive) (emms-seek +10)))
+(define-key emms-playlist-mode-map (kbd "<left>")
+  (lambda () (interactive) (emms-seek -10)))
+(define-key emms-playlist-mode-map (kbd "<up>")
+  (lambda () (interactive) (emms-seek +60)))
+(define-key emms-playlist-mode-map (kbd "<down>")
+  (lambda () (interactive) (emms-seek -60)))
+(define-key emms-playlist-mode-map (kbd "S u") 'emms-score-up-file-on-line)
+(define-key emms-playlist-mode-map (kbd "S d") 'emms-score-down-file-on-line)
+(define-key emms-playlist-mode-map (kbd "S o") 'emms-score-show-file-on-line)
+(define-key emms-playlist-mode-map (kbd "S l") 'emms-score-less-tolerant)
+(define-key emms-playlist-mode-map (kbd "S m") 'emms-score-more-tolerant)
+(define-key emms-playlist-mode-map (kbd "S t") 'emms-score-set-tolerance)
+(define-key emms-playlist-mode-map (kbd "S s") 'emms-score-show-playing)
+;===== emms设置 结束 =====
+
+;;设定shell为bash
+(setq shell-file-name "/bin/bash")
+;;开启shell的颜色支持
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on t)
+;;设置快捷键
+(global-set-key (kbd "C-c z") 'ansi-term)
+(global-set-key (kbd "<f10>") 'rename-buffer)
+
+;; 设置 org-mode
+(add-to-list 'load-path "~/.emacs.d/org-7.5/")
+(require 'org)
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+;只高亮显示最后一个代表层级的*
+(setq org-hide-lcading-stars t)
+;给已完成事项打上时间
+(setq org-log-done ' time)
+
+
+;===== w3m上网设置 开始 =====
+;;使用Emacs-w3m浏览网页
+;; (add-to-list 'load-path "~/emacs/site-lisp/w3m")
+;; (require 'w3m-load)
+;; (require 'w3m-e21)
+;; (provide 'w3m-e23)
+;; (setq w3m-use-favicon nil)
+;; (setq w3m-command-arguments '("-cookie" "-F"))
+;; (setq w3m-use-cookies t)
+;; (setq w3m-home-page "http://www.google.com")
+
+;; (setq w3m-display-inline-image t)
+
+;;启动和初始化w3m.el
+(autoload 'w3m "w3m" "Interface for w3m on Emacs." t)
+(autoload 'w3m-browse-url "w3m" "Ask a WWW browser to show a URL." t)
+(autoload 'w3m-search "w3m-search" "Search words using emacs-w3m." t)
+;;使用w3m作为默认的浏览器
+(setq browse-url-browser-function 'w3m-browse-url)
+;;使用mule-ucs，只有在你安装mule-ucs elisp扩展包时这个才有用，可以看Unicode解码的网页
+;(setq w3m-use-mule-ucs t)
+;;使用工具包
+(setq w3m-use-toolbar t)
+;;使用info的快件键绑定
+;(set-default 'w3m-key-binding 'info)
+;;启用cookie
+(setq w3m-use-cookies t)
+;;这个是作什么的?
+(setq w3m-use-tab-menubar t)
+;;设定w3m图标所在文件夹
+;(setq w3m-icon-directory "/home/jerry/software/xemacs/w3m/emacs-w3m-1.4.4/icons")
+;;显示图标
+(setq w3m-show-graphic-icons-in-header-line t)
+(setq w3m-show-graphic-icons-in-mode-line t)
+;;设定w3m运行的参数，分别为使用cookie和使用框架
+(setq w3m-command-arguments '("-cookie" "-F"))
+;;用w3m浏览网页时也显示图片
+(setq w3m-display-inline-image t)
+;; ;;设定w3m的语言设置，以便方便使用和阅读中文-用了就乱码
+;; ;;书签解码设置
+;; (setq w3m-bookmark-file-coding-system 'chinese-iso-8bit)
+;; ;;w3m的解码设置，后面最好都有，我也不详解了
+;; (setq w3m-coding-system 'chinese-iso-8bit)
+;; (setq w3m-default-coding-system 'chinese-iso-8bit)
+;; (setq w3m-file-coding-system 'chinese-iso-8bit)
+;; (setq w3m-file-name-coding-system 'chinese-iso-8bit)
+;; (setq w3m-terminal-coding-system 'chinese-iso-8bit)
+;; (setq w3m-input-coding-system 'chinese-iso-8bit)
+;; (setq w3m-output-coding-system 'chinese-iso-8bit)
+;;w3m是使用tab的，设定Tab的宽度
+(setq w3m-tab-width 4)
+;;设定w3m的主页
+(setq w3m-home-page "http://www.google.cn")
+;;当用 shift+RET 打开新链接时将不自动跳转到新的页面，等提示已经完全打开，才用 C-c C-n ，
+;;C-c C-p 打开，这个好用
+(setq w3m-view-this-url-new-session-in-background t)
+(add-hook 'w3m-fontify-after-hook 'remove-w3m-output-garbages)
+;;好像是有利于中文搜索的
+(defun remove-w3m-output-garbages ()
+"去掉w3m输出的垃圾."
+(interactive)
+(let ((buffer-read-only))
+(setf (point) (point-min))
+(while (re-search-forward "[\200-\240]" nil t)
+(replace-match " "))
+(set-buffer-multibyte t))
+(set-buffer-modified-p nil))
+;;颜色设置
+;(setq w3m-
+;;;;;;;;;;;;;;;;;;;;;
+;;语言设置
+;;这个不知道有用没，好像在下一版emacs对unicode支持好了就可以了
+;;当然这个是用emacs-cvs
+;;;;;;;;;;;;;;;;;;;;;
+(when (boundp 'utf-translate-cjk)
+(setq utf-translate-cjk t)
+(custom-set-variables
+'(utf-translate-cjk t)))
+(if (fboundp 'utf-translate-cjk-mode)
+(utf-translate-cjk-mode 1))
+;;配置handle text/html part with emacs-w3m under SEMI MUAs such as Wanderlust
+(require `mime-w3m)

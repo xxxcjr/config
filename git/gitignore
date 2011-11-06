@@ -1,0 +1,3 @@
+# 设定不上传目录及文件(./.gitignore)
+# 设置命令“git config --global core.excludesfile 文件”
+

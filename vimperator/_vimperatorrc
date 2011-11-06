@@ -1,4 +1,4 @@
-﻿" Last Modified: 2011-11-05 星期六 22:15:10 [Athena]
+﻿" Last Modified: 2011-11-06 星期日 12:45:27 [Athena]
 " linux:~/.pentadactylrc or ~/.vimperatorrc
 " Windows:c:/User/Athena/_vimperatorrc
 
@@ -85,7 +85,11 @@ autocmd LocationChange www\.* <F11>
 " 禁用CSS 启用set noum
 ":set um
 
-" quickmarks设置
+"===================about:config====================
+"set! general.autoScroll=false
+
+
+"===================== QMarks==================== 
 " t-q:google专用
 :qmark t https://twitter.com
 :qmark r https://reader.google.com
@@ -101,6 +105,8 @@ autocmd LocationChange www\.* <F11>
 :qmark h http://forum.ubuntu.org.cn/search.php?search_id=egosearch&sf=firstpost
 " 水木Emacs区
 :qmark j http://www.newsmth.net/bbsdoc.php?board=Emacs&ftype=6
+" 百度翻译
+:qmark k http://fanyi.baidu.com/
 
 " 测试
 "/* vim: set ft=vim: */ ~
