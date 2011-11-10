@@ -1,5 +1,5 @@
 " ~/.vimrc or c:\Program files\vim\_vimrc
-" Last Modified: 2011-11-03 星期四 22:23:07 [Athena]
+" Last Modified: 2011-11-08 星期二 21:08:57 [Athena]
 " 希锐亚的 vim 配置文件
 
 set nocompatible	" 不兼容vi
@@ -55,6 +55,7 @@ set helplang=cn "设置中文帮助
 """""""""""""""""""""""""""""""""""""""" 内部设置 """"""""""""""""
 " 不使用响铃不闪屏
 set vb t_vb=  
+set ve=all  "设置所有模式下都能VirtualEdit，这样，光标就能走到没字的地方, set ve="" 恢复默认值
 set history=1000 " 记录命令历史行数
 let mapleader = ","	"配置<Leader>，默认为\
 "set mouse=a " 打开鼠标支持
@@ -147,7 +148,7 @@ autocmd FileType java set omnifunc=javacomplete#Complet
 "设置标题栏  %{GitBranch()}要git-vim插件的支持
 "set title titlestring=%<%F%=%l/%L-%P-记事本 titlelen=70
 "set title titlestring=%<%F\ -\ EmEditor\ \ \ {info:\ %w%h%m%r%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-8.(%l,%c%V%)\ %P\ %{GitBranch()}}
-set title titlestring=%F\ -\ EmEditor\ \ \ {info:\ %w%h%m%r%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-8.(%l,%c%V%)\ %P\ %{GitBranch()}}\ [PWD:%{GetPWD()}]
+set title titlestring=%F\ -\ EmEditor\ {info:\ %w%h%m%r%k[%{(&fenc==\"\")?&enc:&fenc}%{(&bomb?\",BOM\":\"\")}]\ %-8.(%l,%c%V%)\ %P\ %{GitBranch()}}\ [PWD:%{GetPWD()}]
 " 获取当前目录
 func! GetPWD()
     return substitute(getcwd(), "", "", "g")
@@ -304,7 +305,8 @@ elseif &filetype == 'html'
     call setline(10, '</html>')
     exe 'normal 12j'
 elseif &filetype == 'txt'
-    call setline(1, "\# File Name: ".expand("%"))
+    "call setline(1, "\# File Name: ".expand("%"))
+    call setline(1, "\# File Name: ".expand("%F"))
     call setline(2, "\# Created Time: ".strftime("%Y-%m-%d %A %H:%M:%S"))
     call setline(3, "\# Last Modified: ".strftime("%Y-%m-%d %A %H:%M:%S"))
     call setline(4, "\-------------------------------------------------------")
