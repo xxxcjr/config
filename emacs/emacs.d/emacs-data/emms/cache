@@ -1,0 +1,6 @@
+;;; .emms-cache -*- mode: emacs-lisp; coding: utf-8; -*-
+(puthash "/home/xxxcjr/music/CN/064.爱江山更爱美人.mp3" '(*track* (type . file) (name . "/home/xxxcjr/music/CN/064.爱江山更爱美人.mp3") (metadata)) emms-cache-db)
+(puthash "/home/xxxcjr/music/new/忘不了.mp3" '(*track* (type . file) (name . "/home/xxxcjr/music/new/忘不了.mp3") (metadata) (last-played 20157 57666 797119) (play-count . 2) (info-mtime 19648 11933)) emms-cache-db)
+(puthash "/home/xxxcjr/music/new/金刚经_心经_坛经[普通话诵读]lrc(1).rar" '(*track* (type . file) (name . "/home/xxxcjr/music/new/金刚经_心经_坛经[普通话诵读]lrc(1).rar") (metadata) (info-mtime 19661 26419)) emms-cache-db)
+(puthash "/home/xxxcjr/music/new/金刚经_心经_坛经[普通话诵读]lrc.rar" '(*track* (type . file) (name . "/home/xxxcjr/music/new/金刚经_心经_坛经[普通话诵读]lrc.rar") (metadata) (info-mtime 19661 26419)) emms-cache-db)
+(puthash "/home/xxxcjr/music/new/金刚经_普通话朗读[100827].mp3" '(*track* (type . file) (name . "/home/xxxcjr/music/new/金刚经_普通话朗读[100827].mp3") (metadata) (info-mtime 19661 26419)) emms-cache-db)
