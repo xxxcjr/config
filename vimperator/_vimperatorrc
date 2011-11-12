@@ -1,4 +1,4 @@
-﻿" Last Modified: 2011-11-06 星期日 12:45:27 [Athena]
+﻿" Last Modified: 2011-11-12 星期六 20:26:57 [Athena]
 " linux:~/.pentadactylrc or ~/.vimperatorrc
 " Windows:c:/User/Athena/_vimperatorrc
 
@@ -107,6 +107,8 @@ autocmd LocationChange www\.* <F11>
 :qmark j http://www.newsmth.net/bbsdoc.php?board=Emacs&ftype=6
 " 百度翻译
 :qmark k http://fanyi.baidu.com/
+"elias的人个主页
+:qmark m http://www.elias.cn/
 
 " 测试
 "/* vim: set ft=vim: */ ~
