@@ -48,7 +48,7 @@
 ;显示行号
 (global-linum-mode t)
 ;默认目录
-(setq default-directory "~/")
+(setq default-directory "~")
 ;高亮当前行
 ;(require 'hl-line)
 ;(global-hl-line-mode t)
@@ -71,14 +71,20 @@
 (setq default-fill-column 78);默认显示 80列就换行
 ;;使用 y or n 提问
 (fset 'yes-or-no-p 'y-or-n-p)
+
+;ido-mode：在Emacs中互动地打开文件
+;http://blog.waterlin.org/articles/ido-mode：在emacs中互动地打开文件.html
+;在打开的Buffers里切换，命令为：C-x b
+;Buffers中循环选择，则要用上C-s(next)或是C-r(previous)这两个命令；用C-f直接退出到打开文件的环境
+;按[Tab]键会自动列出可能的补全方法,用C-x C-d直接打开当前目录的Dired浏览模式
+(require 'ido)
+(ido-mode t)
+
 ;;;;备份策略
-;配置备份文档的路径
-(setq backup-directory-alist '(("" . "~/.emacs.d/auto-save-list/")))
 ;不要生成临时文件
-(setq-default make-backup-files nil)
+;(setq-default make-backup-files nil)
+;
 ;生成临时文件
-;(setq-default make-backup-file t)
-;(setq make-backup-file t)
 ;(setq make-backup-files t)
 ;启用版本控制，即能够备份多次
 (setq version-control t)
@@ -88,6 +94,8 @@
 (setq kept-new-versions 3)
 ;删掉不属于以上版本的版本
 (setq delete-old-versions t)
+;设置备份目录
+(setq backup-directory-alist '(("" . "~/.emacs.d/emacs-data/backup")))
 ;自动存盘
 (setq auto-save-mode t)
 ;击键100次自动保存

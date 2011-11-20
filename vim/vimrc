@@ -1,5 +1,5 @@
 " ~/.vimrc or c:\Program files\vim\_vimrc
-" Last Modified: 2011-11-08 星期二 21:08:57 [Athena]
+" Last Modified: 2011-11-19 星期六 23:35:10 [Athena]
 " 希锐亚的 vim 配置文件
 
 set nocompatible	" 不兼容vi
@@ -114,6 +114,7 @@ set bsdir=buffer "设定文件浏览器目录为当前目录
 autocmd BufEnter * cd %:p:h
 
 " tab转化为４个字符
+" retab                            " 打开vim时把已有的Tab全部转换成空格
 set expandtab
 set smarttab
 set shiftwidth=4
@@ -159,7 +160,8 @@ if has("gui_running")
     set columns=80 lines=18	"设置gui默认界面大小
     winpos 0 200    "设置窗口位置
     if has("unix")
-        colorscheme grey2
+"        colorscheme grey2
+        colorscheme rainbow_neon
         set guifont=Monospace\ 12
         set guifontwide=KaiTi\ 12
     elseif has("win32")
